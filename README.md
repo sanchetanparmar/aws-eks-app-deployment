@@ -75,14 +75,15 @@ Key Components:
 ```
 
 # How to use 
-`git clone https://github.com/sanchetanparmar/aws-eks-app-deployment.git` - Clone repo 
+ Clone repo  - `git clone https://github.com/sanchetanparmar/aws-eks-app-deployment.git`
 
- First deploye AWS resources 
- 1. Create a S3 bcuket and enable versioning for terraform state file. you can cretae from web console or *CLI commnads* - `s3-bucket.sh` 
- 2. Update terraform variable in `var.tfvars`
- 3. Initialize terraform `terraform init`
- 4. terraform execution plan   `terraform plan -var-file vars.tfvars`
- 5. deploy terraform changes to cerate resources `terraform apply -var-file vars.tfvars`  it will ask for confirmation 
+  Deploy AWS resources using terraform 
+ 1. `cd terraform`
+ 2. Create a S3 bcuket and enable versioning for terraform state file. you can cretae from web console or *CLI commnads* - `s3-bucket.sh`
+ 3. Update terraform variable in `var.tfvars`
+ 4. Initialize terraform `terraform init`
+ 5. terraform execution plan   `terraform plan -var-file vars.tfvars`
+ 6. deploy terraform changes to cerate resources `terraform apply -var-file vars.tfvars`  it will ask for confirmation 
 
 ```
  terraform init                            # Initialize terraform
