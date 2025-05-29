@@ -39,6 +39,9 @@ Key Components:
  ECR integration for container registry
  
  Automated Kubernetes deployment
+
+# Repository Structure
+
  
 ```├── alb-ingress-
 ├── helloworld-app -  sample python app
@@ -65,13 +68,27 @@ Key Components:
     │       └── variables.tf  - Variable file
     ├── s3-bucket.sh  - CLI commands to create S3 for terraform state file ( remote state ) 
     ├── state.tf      - Terraform state configuration 
-    ├── var.tfvars    - Variable value file 
+    ├── vars.tfvars    - Variable value file 
     ├── variables.tf  - variable file 
     ├── provider.tf   - terraform provider
     └── vpc.tf        - VPC 
 ```
 
+# How to use 
+`git clone https://github.com/sanchetanparmar/aws-eks-app-deployment.git` - Clone repo 
+
+ First deploye AWS resources 
+ 1. Create a S3 bcuket and enable versioning for terraform state file. you can cretae from web console or *CLI commnads* - `s3-bucket.sh` 
+ 2. Update terraform variable in `var.tfvars`
+ 3. Initialize terraform `terraform init`
+ 4. terraform execution plan   `terraform plan -var-file vars.tfvars`
+ 5. deploy terraform changes to cerate resources `terraform apply -var-file vars.tfvars`  it will ask for confirmation 
+
+```
+ terraform init                            # Initialize terraform
+ terraform plan -var-file vars.tfvars      # terraform execution plan
+ terraform apply -var-file vars.tfvars     # deploy terraform changes to cerate resources. It will ask for confirmation. 
 
 
-
+```
 
