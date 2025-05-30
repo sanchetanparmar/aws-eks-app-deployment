@@ -93,12 +93,12 @@ Key Components:
 ```
 # Install Hellword app on EKS 
 1. Create Docker image `docker build -t sp-hello-world-app .`
-
-2. Tag Docker image `docker tag sp-hello-world-app:latest 708646111713.dkr.ecr.us-west-2.amazonaws.com/sp-hello-world-app:latest`
-3. Push docker image to ECR - `docker push 708646111713.dkr.ecr.us-west-2.amazonaws.com/sp-hello-world-app:latest`
-4. deploy kubernetes deployment and service `cd ../k8s`
-5. Create a deployment `kubectl apply -f deployment.yaml`
-6. Create a service `kubectl apply -f servive.yaml`
+2. Login to ECR - `aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 708646111713.dkr.ecr.us-west-2.amazonaws.com`
+3. Tag Docker image `docker tag sp-hello-world-app:latest 708646111713.dkr.ecr.us-west-2.amazonaws.com/sp-hello-world-app:latest`
+4. Push docker image to ECR - `docker push 708646111713.dkr.ecr.us-west-2.amazonaws.com/sp-hello-world-app:latest`
+5. deploy kubernetes deployment and service `cd ../k8s`
+6. Create a deployment `kubectl apply -f deployment.yaml`
+7. Create a service `kubectl apply -f servive.yaml`
 
 
 
