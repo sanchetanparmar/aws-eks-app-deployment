@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - hello-world/**
+      - .github/workflows/deploy.yml
      
 
 env:
@@ -32,7 +33,7 @@ jobs:
 
       - name: Build, tag, and push image to Amazon ECR
         run: |
-          cd app
+          cd hello-world
           docker build -t ${{ secrets.ECR_REPOSITORY }}:${{ github.sha }} .
           docker push ${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
 
