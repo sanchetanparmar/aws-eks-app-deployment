@@ -8,7 +8,7 @@ on:
      
 
 env:
-  AWS_REGION: eu-nooth-1
+  AWS_REGION: eu-north-1
 
 
 jobs:
