@@ -1,77 +1,50 @@
-# End to end aws-eks-app-deployment
-guide to deployed webapp on eks. This covers all the required tasks 
-Key Components:
+# Deploy Simple Webapp on EKS 
+APP Home - http://acb07dc5dedde480ca963b9fe2074393-1776350714.eu-north-1.elb.amazonaws.com
 
-# Infrastructure as Code (Terraform):
- Complete EKS cluster setup with VPC, subnets, and security groups
+health-check endpoin -  http://acb07dc5dedde480ca963b9fe2074393-1776350714.eu-north-1.elb.amazonaws.com/healthz
+
+Guide to deploy webapp on eks. This covers all the required tasks 
+# Key Components:
+
+ Infrastructure as Code (Terraform)
  
- ECR repository for container images
+ Python Application:
  
- S3 bucket for Terraform state management
+ Containerization
  
- ACM for SSL 
+ CI/CD Pipeline
  
- Route53 for DNS 
-
-
-# Python Application:
-
- Simple "Hello World" web app with /healthz endpoint
-
-
-# Containerization:
-  Dockerfile
-  Health checks
-
-
-# Kubernetes Manifests:
-
- Deployment with resource limits and health checks
- 
- LoadBalancer service for external access
- 
- HPA configuration for auto-scaling
- 
-
-# CI/CD Pipeline:
  GitHub Actions workflow for automated build and deployment
  
  ECR integration for container registry
  
- Automated Kubernetes deployment
+ Automated Kubernetes deployment ( Helm chart deployment) 
 
 # Repository Structure
 
  
-```├── alb-ingress-
-├── helloworld-app -  sample python app
-│   ├── Dockerfile 
+```├── README.md
+├── hello-world
+│   ├── Dockerfile
+│   ├── helm
+│   │   ├── Chart.yaml
+│   │   ├── charts
+│   │   ├── templates
+│   │   │   ├── deployment.yaml
+│   │   │   ├── hpa-yaml
+│   │   │   └── service.yaml
+│   │   └── values.yaml
 │   ├── main.py
 │   └── requirements.txt
-├── helm-tf
-├── k8s - kubernetes resources
-│   ├── deployment.yaml  -   Deployment 
-│   ├── sanjay-ing.yaml  -   Ingress 
-│   ├── sanjay-svc.yaml  -   service 
-│   └── servive.yaml
 └── terraform
-    ├── acm.tf - create ssl certificate 
-    ├── ecr.tf - Setup ECR repo
-    ├── eks.tf - Setup EKS cluster with node 
-    ├── iam-policy.json - IAM policy for worker node to setup AWS ALB ingress
-    ├── ingress-alb-policy.tf  - Attched policy to worker node 
-    ├── modules - Module for ACM 
-    │   └── acm
-    │       ├── main.tf      - main acm file to create ssl certificate 
-    │       ├── output.tf    - Output ARN for ACM 
-    │       ├── route53.tf   - Create Route53 to validate ACM by DNS
-    │       └── variables.tf  - Variable file
-    ├── s3-bucket.sh  - CLI commands to create S3 for terraform state file ( remote state ) 
-    ├── state.tf      - Terraform state configuration 
-    ├── vars.tfvars    - Variable value file 
-    ├── variables.tf  - variable file 
-    ├── provider.tf   - terraform provider
-    └── vpc.tf        - VPC 
+    ├── ecr.tf
+    ├── eks.tf
+    ├── provider.tf
+    ├── s3-bucket.sh
+    ├── state.tf
+    ├── variables.tf
+    ├── vars.tfvars
+    └── vpc.tf
 ```
 
 # How to use 
@@ -91,14 +64,48 @@ Key Components:
  terraform apply -var-file vars.tfvars     # deploy terraform changes to cerate resources. It will ask for confirmation. 
 
 ```
-# Install Hellword app on EKS 
-1. Create Docker image `docker build -t sp-hello-world-app .`
-2. Login to ECR - `aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 708646111713.dkr.ecr.us-west-2.amazonaws.com`
-3. Tag Docker image `docker tag sp-hello-world-app:latest 708646111713.dkr.ecr.us-west-2.amazonaws.com/sp-hello-world-app:latest`
-4. Push docker image to ECR - `docker push 708646111713.dkr.ecr.us-west-2.amazonaws.com/sp-hello-world-app:latest`
-5. deploy kubernetes deployment and service `cd ../k8s`
-6. Create a deployment `kubectl apply -f deployment.yaml`
-7. Create a service `kubectl apply -f servive.yaml`
+# Install Hello world app on EKS 
+1. Create Docker image `cd hello-world &&  docker build -t sp-hello-world-app .`
+2. Login to ECR - `aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin {AWS_Account}.dkr.ecr.us-west-2.amazonaws.com`
+3. Tag Docker image `docker tag sp-hello-world-app:latest {AWS_Account}.dkr.ecr.us-west-2.amazonaws.com/sp-hello-world-app:latest`
+4. Push docker image to ECR - `docker push {AWS_Account}.dkr.ecr.us-west-2.amazonaws.com/sp-hello-world-app:latest`
+5. Deploy helm chars
+et image.tag=${{ github.sha }}
+```
+helm upgrade --install hello-world ./hello-world/helm \
+    --namespace default \
+    --create-namespace \
+    --set image.repository=${{ secrets.ECR_REPOSITORY }} \
+    --set image.tag=${{ github.sha }}
+```
+
+6.  Check kubernetes resources 
+  ```
+   kubectl get po 
+   kubectl get svc 
+   kubectl get hpa
+```
+
+7.  Test HPA-
+   
+   1. Install Apache benchmarking tool. Run ab test and use kuberenet service load balancer as host 
+      ```
+      sudo apt-get update && sudo apt-get install -y apache2-utils
+ 
+      ab -n 1000 -c 10 http://acb07dc5dedde480ca963b9fe2074393-1776350714.eu-north-1.elb.amazonaws.com/
+      ```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
