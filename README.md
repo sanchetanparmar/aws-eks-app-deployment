@@ -1,7 +1,7 @@
 # Deploy Simple Webapp on EKS 
 APP Home - http://acb07dc5dedde480ca963b9fe2074393-1776350714.eu-north-1.elb.amazonaws.com
 
-health-check endpoin -  http://acb07dc5dedde480ca963b9fe2074393-1776350714.eu-north-1.elb.amazonaws.com/healthz
+health-check endpoint -  http://acb07dc5dedde480ca963b9fe2074393-1776350714.eu-north-1.elb.amazonaws.com/healthz
 
 Guide to deploy webapp on eks. This covers all the required tasks 
 # Key Components:
